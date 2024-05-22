@@ -1,5 +1,6 @@
 import csv
 letters = {chr(i): 0 for i in range(ord('a'), ord('z')+1)}
+# import locator as lc
 
 # These letters will represent the dictionary, and their values tell you
 # about where they will be found in the word: 0 as default, -1 unknown,
@@ -7,21 +8,21 @@ letters = {chr(i): 0 for i in range(ord('a'), ord('z')+1)}
 # at all, and 1-5 is their place in the word for sure.
 
 # letters of significance here for TESTING
-letters['p'] = -1
-letters['e'] = -1
-letters['n'] = -1
-letters['i'] = -1
-letters['s'] = 5
-letters['a'] = 1
-letters['b'] = -1
-letters['h'] = -1
-letters['o'] = -1
-letters['r'] = -1
-# letters['c'] = 1
-# letters['u'] = 2
-# letters['l'] = -1
-# letters['t'] = -1
-# letters['y'] = -1
+# letters['p'] = -1
+# letters['e'] = -1
+# letters['n'] = 3
+# letters['i'] = -5
+# letters['s'] = -1
+# letters['a'] = -1
+# letters['b'] = -1
+# letters['h'] = -1
+# letters['o'] = -5
+# letters['r'] = -1
+# letters['z'] = 1
+# letters['y'] = 2
+# letters['m'] = -1
+# letters['i'] = -1
+# letters['c'] = -1
 # letters['z'] = -1
 # letters['u'] = -1
 # letters['r'] = -4
@@ -33,7 +34,7 @@ letters['r'] = -1
 # letters['t'] = -5
 # letters['y'] = 5
 
-#TODO 
+#TODO 1 
 
 #MAKE THESE DICTIONARIES TO SAVE WHICH SPOTS ARE INCORRECT
 
@@ -220,7 +221,7 @@ def finalGuess(word_list, letter_dict):
 
 #print(newWordList(AllWords, letters))
 common_letters = generateCommonLetters(newWordList(AllWords,letters))
-print(common_letters)
+# print(common_letters)
 dummy_words = generateDummyWord(AllWords,generateCommonLetters(newWordList(AllWords, letters)))
 print(dummy_words)
 valid_words = validWordsFromList(newWordList(AllWords, letters))

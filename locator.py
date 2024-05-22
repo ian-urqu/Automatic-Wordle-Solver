@@ -1,23 +1,189 @@
-import cv2 as cv
-from PIL import ImageGrab, Image
-import numpy as np
+from pyautogui import *
+import pyautogui
+import time
+import keyboard
+import random
+import win32api, win32con
+import csv
 
-region = (300, 300, 600, 900)
-correct_i = cv.imread('./screenshots/correct"I".png')
+import WordleBot as w
+
+#ON DARK MODE RGB COLORS:
+# GREY: (58, 58, 60)
+# YELLOW: (181, 159, 59)
+# GREEN: (83, 141, 78)
+
+#LOCATIONS of PRESSES on 2560x1440 screen at 100% zoom
+# Columns:
+# 1: 1145
+# 2: 1210
+# 3: 1280
+# 4: 1350
+# 5: 1415
+# FOR OFFICIAL NYT WEBSITE
+# Rows:
+# 1: 440
+# 2: 510
+# 3: 575
+# 4: 645
+# 5: 705
+# 6: 775
+
+#FOR ARCHIVE
+# Rows:
+y1 = 560
+y2 = 630
+y3 = 690
+y4 = 765
+y5 = 825
+y6 = 895
+
+x1 = 1145
+x2 = 1210
+x3 = 1280
+x4 = 1350
+x5 = 1415
+
+# y1 = 440
+# y2 = 510
+# y3 = 575
+# y4 = 645
+# y5 = 705
+# y6 = 775
+
+first_row = [
+    (x1, y1),
+    (x2, y1),
+    (x3, y1),
+    (x4, y1),
+    (x5, y1)
+]
+
+second_row = [
+    (x1, y2),
+    (x2, y2),
+    (x3, y2),
+    (x4, y2),
+    (x5, y2)
+]
+
+third_row = [
+    (x1, y3),
+    (x2, y3),
+    (x3, y3),
+    (x4, y3),
+    (x5, y3)
+]
+
+fourth_row = [
+    (x1, y4),
+    (x2, y4),
+    (x3, y4),
+    (x4, y4),
+    (x5, y4)
+]
+
+fifth_row = [
+    (x1, y5),
+    (x2, y5),
+    (x3, y5),
+    (x4, y5),
+    (x5, y5)
+]
+
+sixth_row = [
+    (x1, y5),
+    (x2, y5),
+    (x3, y5),
+    (x4, y5),
+    (x5, y5)
+]
+
+grid = []
+grid.append(first_row)
+grid.append(second_row)
+grid.append(third_row)
+grid.append(fourth_row)
+grid.append(fifth_row)
+grid.append(sixth_row)
+
+letters = {chr(i): 0 for i in range(ord('a'), ord('z')+1)}
+words_entered = []
+# every word possible to guess
+AllWords = []
+with open('valid-words.csv', 'r') as csvfile:
+        csvreader = csv.reader(csvfile)
+        for row in csvreader:
+            word = row[0]
+            AllWords.append(word)
+
+# word bank of possible correct answers
+WordBank = []
+with open('word-bank.csv', 'r') as csvfile:
+    csvreader = csv.reader(csvfile)
+    for row in csvreader:
+        word = row[0]
+        WordBank.append(word)
 
 
 
+#TODO 2 write to calculate where from the screen based on first input
+# possibly use locate on screen?
 
-def locate_opencv_pil():
-    img = ImageGrab.grab(bbox=region)
-    img_np = np.array(img)
-    img_cv = cv.cvtColor(img_np, cv.COLOR_RGB2BGR)  # Convert PIL to OpenCV format
-    res = cv.matchTemplate(img_cv, correct_i, cv.TM_CCORR)
-    threshold = 0.8
-    loc = np.where(res >= threshold)
-    if len(loc[0]) > 0:
-        return True
-    else:
-        return False
 
-print(locate_opencv_pil())
+#to type a word
+def type_word(word):
+    pyautogui.typewrite(word)
+    pyautogui.press('enter')
+    words_entered.append(word)
+
+def check_colors(word, row):
+    i = 0
+    for coord in row:
+        # grey, incorrect
+        if pyautogui.pixel(coord[0], coord[1]) == (58, 58, 60):
+            letters[word[i]] = -1
+        # yellow, incorrect spot but in word
+        elif pyautogui.pixel(coord[0], coord[1]) == (181, 159, 59):
+            letters[word[i]] = -2 - i
+        # green
+        elif pyautogui.pixel(coord[0], coord[1]) == (83, 141, 78):
+            letters[word[i]] = i + 1
+        
+        i = i + 1
+
+def determine_next_word():
+    common_letters = w.generateCommonLetters(w.newWordList(AllWords,letters))
+    dummy_words = w.generateDummyWord(AllWords,w.generateCommonLetters(w.newWordList(AllWords, letters)))
+    valid_words = w.validWordsFromList(w.newWordList(AllWords, letters))
+    print(valid_words)
+    if len(valid_words) == 1:
+        final_guess = (w.finalGuess(valid_words,common_letters))
+        return final_guess
+    if len(words_entered) >= 4:
+        return random.choice(valid_words)
+    if len(valid_words) <= 5:
+        return random.choice(valid_words)
+    return dummy_words
+
+
+
+print("Press ` to begin")
+keyboard.wait('`')
+
+type_word("penis")
+time.sleep(2)
+count = 0
+while count < len(grid):
+    
+    check_colors(words_entered[count], grid[count])
+    try:
+        next_word = determine_next_word()
+    except IndexError: 
+        break
+    type_word(next_word)
+    count = count + 1
+    time.sleep(2)
+    
+
+
