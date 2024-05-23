@@ -29,8 +29,8 @@ import WordleBot as w
 # 5: 705
 # 6: 775
 
-#FOR ARCHIVE
-# Rows:
+# #FOR ARCHIVE
+# # Rows:
 y1 = 560
 y2 = 630
 y3 = 690
@@ -140,29 +140,28 @@ def type_word(word):
 def check_colors(word, row):
     i = 0
     for coord in row:
+        pixel_color = pyautogui.pixel(coord[0], coord[1])
         # grey, incorrect
-        if pyautogui.pixel(coord[0], coord[1]) == (58, 58, 60):
+        if pixel_color == (58, 58, 60):
             letters[word[i]] = -1
         # yellow, incorrect spot but in word
-        elif pyautogui.pixel(coord[0], coord[1]) == (181, 159, 59):
+        elif pixel_color == (181, 159, 59):
             letters[word[i]] = -2 - i
         # green
-        elif pyautogui.pixel(coord[0], coord[1]) == (83, 141, 78):
+        elif pixel_color == (83, 141, 78):
             letters[word[i]] = i + 1
-        
         i = i + 1
 
 def determine_next_word():
     common_letters = w.generateCommonLetters(w.newWordList(AllWords,letters))
     dummy_words = w.generateDummyWord(AllWords,w.generateCommonLetters(w.newWordList(AllWords, letters)))
     valid_words = w.validWordsFromList(w.newWordList(AllWords, letters))
-    print(valid_words)
     if len(valid_words) == 1:
         final_guess = (w.finalGuess(valid_words,common_letters))
         return final_guess
-    if len(words_entered) >= 4:
+    if len(words_entered) >= 3:
         return random.choice(valid_words)
-    if len(valid_words) <= 5:
+    if len(valid_words) <= 6 - len(words_entered):
         return random.choice(valid_words)
     return dummy_words
 
@@ -171,19 +170,38 @@ def determine_next_word():
 print("Press ` to begin")
 keyboard.wait('`')
 
-type_word("penis")
+type_word("heart")
 time.sleep(2)
 count = 0
 while count < len(grid):
     
     check_colors(words_entered[count], grid[count])
+    
+    # Check if miniscreen has popped up
+    # FOR ARCHIVE
+    pixel_color = pyautogui.pixel(1480, 943)
+    # grey, incorrect
+    if pixel_color == (77, 129, 72):
+        break
+    #if all green letters, break
+    all_green = all(letters[letter] == i + 1 for i, letter in enumerate(words_entered[count]))
+    
+    if all_green:
+        print("Completed run.")
+        break
+
     try:
         next_word = determine_next_word()
-    except IndexError: 
+    except IndexError:
+        print("Failed word.") 
         break
+    print("Next word: " + next_word)
     type_word(next_word)
+    
+    
     count = count + 1
-    time.sleep(2)
+    print("Determining next word...")
+    time.sleep(4)
     
 
 

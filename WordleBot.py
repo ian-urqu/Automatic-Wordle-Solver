@@ -66,7 +66,7 @@ def newWordList(list,letters):
     for letter in letters:
         if letters[letter] > 0:
             correct_letters.update({letter: letters[letter]})
-    print(correct_letters)
+    
     
     #create list of correct letters but incorrect spot
     correct_spot_letters = {}
@@ -75,7 +75,7 @@ def newWordList(list,letters):
             correct_spot_letters.update({letter: (abs(letters[letter])-2)})
     
 
-    print(correct_spot_letters)
+    
     
     #create dictionary of incorrect letters
     incorrect_letters = []
@@ -211,7 +211,6 @@ def finalGuess(word_list, letter_dict):
         for letter in letter_dict:
             if letter_dict[letter] == 1 and letter in word:
                 count += 1
-        print(f"Word: {word}, Count: {count}, Max Count: {max_count}")  # Debug print
         if count > max_count:
             max_count = count
             final_word = word
@@ -220,15 +219,15 @@ def finalGuess(word_list, letter_dict):
 
 
 #print(newWordList(AllWords, letters))
-common_letters = generateCommonLetters(newWordList(AllWords,letters))
+# common_letters = generateCommonLetters(newWordList(AllWords,letters))
 # print(common_letters)
-dummy_words = generateDummyWord(AllWords,generateCommonLetters(newWordList(AllWords, letters)))
-print(dummy_words)
-valid_words = validWordsFromList(newWordList(AllWords, letters))
-print(valid_words)
-if len(valid_words) == 1:
-    final_guess = (finalGuess(valid_words,common_letters))
-    print("Final guess is: " + final_guess)
+# dummy_words = generateDummyWord(AllWords,generateCommonLetters(newWordList(AllWords, letters)))
+#print(dummy_words)
+# valid_words = validWordsFromList(newWordList(AllWords, letters))
+#print(valid_words)
+# if len(valid_words) == 1:
+#     final_guess = (finalGuess(valid_words,common_letters))
+#     print("Final guess is: " + final_guess)
 
 
 
